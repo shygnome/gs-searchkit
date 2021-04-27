@@ -12,6 +12,7 @@ services:
         restart: always
         environment:
             ES_HOST: host.docker.internal:9200
+            API_URL: searchkit-api:3000
         depends_on:
             - searchkit-api 
         networks: 
@@ -24,7 +25,7 @@ services:
             context: searchkit-api
             dockerfile: Dockerfile
         ports:
-            - "3000:3000"
+            - "3000"
         restart: always
         environment:
             ES_HOST: host.docker.internal:9200
