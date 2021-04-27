@@ -2,7 +2,7 @@ import { withSearchkit } from "@searchkit/client";
 import withApollo from "../lib/withApollo";
 import dynamic from 'next/dynamic'
 const Search = dynamic(
-  () => import('../components/Search'),
+  () => import('../components/search'),
   { ssr: false }
 )
 
