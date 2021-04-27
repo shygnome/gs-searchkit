@@ -2,6 +2,7 @@ import { ApolloServer, gql } from "apollo-server-micro";
 import {
   MultiMatchQuery,
   SearchkitSchema,
+  DateRangeFacet,
   RefinementSelectFacet,
 } from "@searchkit/schema";
 import cors from "micro-cors";
@@ -10,10 +11,25 @@ const searchkitConfig = {
   host: "http://localhost:9200",
   index: "kibana_sample_data_flights",
   hits: {
-    fields: [],
+    fields: [
+      "Carrier",
+      "FlightNum",
+      "Dest",
+      "Origin",
+      "DestCountry",
+      "OriginCountry",
+      "DestWeather",
+      "OriginWeather",
+    ],
   },
+  sortOptions: [
+    { id: 'relevance', label: "Relevance", field: [{"_score": "desc"}], defaultOption: true},
+    { id: 'timestamp', label: "Timestamp", field: [{"timestamp": "desc"}]},
+  ],
   query: new MultiMatchQuery({
     fields: [
+      "Carrier",
+      "FlightNum",
       "Dest",
       "Origin",
       "DestCountry",
@@ -24,15 +40,16 @@ const searchkitConfig = {
   }),
   facets: [
     new RefinementSelectFacet({
-      field: "DestCountry.raw",
-      identifier: "DestCountry",
-      label: "DestCountry",
+      field: 'Carrier.keyword',
+      identifier: 'Carrier',
+      label: 'Carrier',
+      display: 'ComboBoxFacet'
     }),
-    // new RefinementSelectFacet({
-    //   field: "OriginCountry.raw",
-    //   identifier: "OriginCountry",
-    //   label: "OriginCountry",
-    // }),
+    new DateRangeFacet({
+      field: "timestamp",
+      identifier: "timestamp",
+      label: "Timestamp",
+    }),
   ],
 };
 
@@ -84,6 +101,8 @@ const server = new ApolloServer({
   },
 });
 
-const handler = server.createHandler({ path: '/api/graphql' })
+const handler = server.createHandler({ path: "/api/graphql" });
 
-export default cors()((req, res) => req.method === 'OPTIONS' ? res.end() : handler(req, res))
+export default cors()((req, res) =>
+  req.method === "OPTIONS" ? res.end() : handler(req, res)
+);
