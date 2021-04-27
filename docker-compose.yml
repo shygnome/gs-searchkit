@@ -1,0 +1,37 @@
+version: '3.3'
+
+services:
+    searchkit-ui:
+        image: gs-searchkit/searchkit-ui
+        container_name: searchkit-ui-app
+        build:
+            context: searchkit-ui
+            dockerfile: Dockerfile
+        ports:
+            - "3001:3000"
+        restart: always
+        environment:
+            ES_HOST: host.docker.internal:9200
+        depends_on:
+            - searchkit-api 
+        networks: 
+            - searchkit
+    
+    searchkit-api:
+        image: gs-searchkit/searchkit-api
+        container_name: searchkit-api-app
+        build:
+            context: searchkit-api
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        restart: always
+        environment:
+            ES_HOST: host.docker.internal:9200
+        networks:
+            - searchkit
+
+networks:
+    searchkit:
+        driver: bridge
+              
