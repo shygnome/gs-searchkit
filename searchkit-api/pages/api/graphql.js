@@ -59,6 +59,8 @@ const server = new ApolloServer({
 
       type HitFields {
         root: String
+        Carrier: String
+        FlightNum: String
         Dest: String
         Origin: String
         DestCountry: String
