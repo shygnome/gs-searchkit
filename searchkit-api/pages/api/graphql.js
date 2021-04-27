@@ -4,6 +4,7 @@ import {
   SearchkitSchema,
   RefinementSelectFacet,
 } from "@searchkit/schema";
+import cors from "micro-cors";
 
 const searchkitConfig = {
   host: "http://localhost:9200",
@@ -81,4 +82,6 @@ const server = new ApolloServer({
   },
 });
 
-export default server.createHandler({ path: "/api/graphql" });
+const handler = server.createHandler({ path: '/api/graphql' })
+
+export default cors()((req, res) => req.method === 'OPTIONS' ? res.end() : handler(req, res))
