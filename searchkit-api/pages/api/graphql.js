@@ -8,7 +8,7 @@ import {
 import cors from "micro-cors";
 
 const searchkitConfig = {
-  host: "http://localhost:9200",
+  host: process.env.ES_HOST || "http://localhost:9200",
   index: "kibana_sample_data_flights",
   hits: {
     fields: [
